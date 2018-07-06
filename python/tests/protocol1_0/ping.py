@@ -29,6 +29,7 @@
 #
 
 import os
+import time
 
 if os.name == 'nt':
     import msvcrt
@@ -52,10 +53,11 @@ from dynamixel_sdk import *                 # Uses Dynamixel SDK library
 PROTOCOL_VERSION        = 1.0               # See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL_ID                  = 1                 # Dynamixel ID : 1
-BAUDRATE                = 57600             # Dynamixel default baudrate : 57600
-DEVICENAME              = '/dev/ttyUSB0'    # Check which port is being used on your controller
+DXL_ID                  = 19                 # Dynamixel ID : 1
+BAUDRATE                = 1000000             # Dynamixel default baudrate : 57600
+DEVICENAME              = '/dev/ttyACM0'    # Check which port is being used on your controller
                                             # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+PING_RANGE = 32
 
 # Initialize PortHandler instance
 # Set the port path
@@ -88,13 +90,16 @@ else:
 
 # Try to ping the Dynamixel
 # Get Dynamixel model number
-dxl_model_number, dxl_comm_result, dxl_error = packetHandler.ping(portHandler, DXL_ID)
-if dxl_comm_result != COMM_SUCCESS:
-    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-elif dxl_error != 0:
-    print("%s" % packetHandler.getRxPacketError(dxl_error))
-else:
-    print("[ID:%03d] ping Succeeded. Dynamixel model number : %d" % (DXL_ID, dxl_model_number))
+for DXL_ID in range(2,PING_RANGE):
+    dxl_model_number, dxl_comm_result, dxl_error = packetHandler.ping(portHandler, DXL_ID)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("[ID:%03d] ping Succeeded. Dynamixel model number : %d" % (DXL_ID, dxl_model_number))
+time.sleep(0.1)
+
 
 # Close port
 portHandler.closePort()
