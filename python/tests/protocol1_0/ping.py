@@ -90,7 +90,7 @@ else:
 
 # Try to ping the Dynamixel
 # Get Dynamixel model number
-for DXL_ID in range(2,PING_RANGE):
+for DXL_ID in range(1,PING_RANGE):
     dxl_model_number, dxl_comm_result, dxl_error = packetHandler.ping(portHandler, DXL_ID)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
